@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer')
-const config = require('./config')
+const config = require('../../config')
 
 const { users } = config
 const REGISTER_URL = 'https://dev.onelambda.clevyr.on-livi.com/register'
