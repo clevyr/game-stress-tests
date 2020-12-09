@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node index.js",
+    "init": "node init.js",
     "lint": "npx standard",
     "lint-fix": "npx standard --fix"
   },
