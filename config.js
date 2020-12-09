@@ -12,14 +12,17 @@ const generateBotConfig = (name) => {
   }
 }
 
+const baseNames = ['aaron', 'gabe', 'tony', 'grant', 'jake']
+const users = []
+
+for (let i = 0; i < 2; i++) {
+  baseNames.forEach((name) => {
+    users.push(generateBotConfig(name + i))
+  })
+}
+
 const config = {
-  users: [
-    generateBotConfig('aaron'),
-    generateBotConfig('gabe'),
-    generateBotConfig('tony'),
-    generateBotConfig('grant'),
-    generateBotConfig('jake'),
-  ]
+  users
 }
 
 module.exports = config
