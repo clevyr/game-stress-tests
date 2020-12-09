@@ -11,12 +11,12 @@ To Run:
 npm run browser-init
 
 # Run the Browser stress tests
-npm run browser # Runs for all users
-npm run browser 2 # Runs for 2 users
+npm run browser # Runs for one user
+npm run browser --limit=10 --offset=5 # Runs for 10 users, after the 5th user
 
 # Run all stress tests (currently only browser tests)
-npm run test # Runs for all users
-npm run test 2 # Runs for 2 users
+npm run test # Runs for one user
+npm run browser --limit=10 --offset=5 # Runs for 10 users, after the 5th user
 ```
 
 Lint
