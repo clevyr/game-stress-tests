@@ -4,7 +4,9 @@
   "description": "A collection of stress tests for the Livi platform",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js"
+    "test": "node index.js",
+    "lint": "npx standard",
+    "lint-fix": "npx standard --fix"
   },
   "repository": {
     "type": "git",
@@ -18,5 +20,8 @@
   "homepage": "https://github.com/clevyr/livi-stress-tests#readme",
   "dependencies": {
     "puppeteer": "^5.5.0"
+  },
+  "devDependencies": {
+    "standard": "^16.0.3"
   }
 }
