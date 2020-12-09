@@ -5,7 +5,12 @@ const { users } = config
 const LOGIN_URL = `${process.env.URL}/join`
 
 exports.run = async () => {
-  users.forEach((user) => {
+  const lastArg = process.argv[process.argv.length - 1];
+  const limit = parseInt(lastArg); // Will be NaN if lastArg isn't a number
+
+  const filteredUsers = limit ? users.slice(0, limit) : users;
+
+  filteredUsers.forEach((user) => {
     (async () => {
       const browser = await puppeteer.launch({
         headless: false
