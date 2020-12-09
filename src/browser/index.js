@@ -9,8 +9,9 @@ const program = new Command();
 
 const run = async () => {
   program
-    .option('-l, --limit <limit>', 'Max number of users for stress testing', 10)
+    .option('-l, --limit <limit>', 'Max number of users for stress testing', 1)
     .option('-o, --offset <offset>', 'Use users after nth offset', 0)
+    .option('-h, --headless', 'Run the test in headless mode', false)
 
   program.parse(process.argv)
 
@@ -18,14 +19,15 @@ const run = async () => {
   const endUser = startUser + parseInt(program.limit)
 
   console.log(`Starting at user ${startUser}`);
-  console.log(`Creating ${program.limit} users`);
+  console.log(`Running tests for ${program.limit} users`);
+  console.log(`Headless mode: ${program.headless}`);
 
   const filteredUsers = users.slice(startUser, endUser)
 
   filteredUsers.forEach((user) => {
     (async () => {
       const browser = await puppeteer.launch({
-        headless: true
+        headless: program.headless
       })
       const page = await browser.newPage()
       await page.setViewport({
@@ -44,17 +46,24 @@ const run = async () => {
       console.log('Successful login');
 
       // Let the login action run
-      await page.waitForTimeout(15000)
 
       // Skip through the "Get Started" navigation
-      // await page.click('[class^="Modal"] [class^="CloseButton"]')
-      // await page.waitForTimeout(100)
-      // await page.click('[class^="Modal"] [class^="CloseButton"]')
-      // await page.waitForTimeout(100)
-      // await page.click('[class^="Modal"] [class^="CloseButton"]')
-      // await page.waitForTimeout(100)
+      if (!program.headless) {
+        console.log('Running non-headless: waiting for modal to close');
+        const closeButtonSelector = '[class^="Modal"] [class^="CloseButton"]';
+        await page.waitForSelector(closeButtonSelector);
 
-      console.log('Modal closes');
+        // Close it 3 times
+        await page.click(closeButtonSelector)
+        await page.waitForSelector(closeButtonSelector);
+        await page.click(closeButtonSelector)
+        await page.waitForSelector(closeButtonSelector);
+        await page.click(closeButtonSelector)
+
+        console.log('Modal closed');
+      } else {
+        await page.waitForTimeout(15000)
+      }
 
       // Run in a circle. Forever.
       await page.keyboard.down('ArrowUp')
