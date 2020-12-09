@@ -5,7 +5,7 @@ const REGISTER_URL = `${process.env.URL}/register`;
 
 (async () => {
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: false
   })
   const page = await browser.newPage()
   await page.setViewport({
@@ -15,7 +15,7 @@ const REGISTER_URL = `${process.env.URL}/register`;
   })
 
   const { users } = config
-  const user = users[0];
+  const user = users[0]
 
   await page.goto(REGISTER_URL, { waitUntil: 'networkidle2' })
 
@@ -26,7 +26,7 @@ const REGISTER_URL = `${process.env.URL}/register`;
   await page.type('input[placeholder^="Re-enter"]', user.password)
   await page.type('input[placeholder^="Company"]', user.company)
   await page.type('input[placeholder^="Title"]', user.title)
-  await page.click('[class^="Checkbox__StyledCheckbox"]');
+  await page.click('[class^="Checkbox__StyledCheckbox"]')
 
   await page.click('form [type="submit"]')
 
@@ -38,14 +38,14 @@ const REGISTER_URL = `${process.env.URL}/register`;
   await page.waitForTimeout(12000)
 
   // Skip through the "Get Started" navigation
-  await page.click('[class^="Modal"] [class^="CloseButton"]');
+  await page.click('[class^="Modal"] [class^="CloseButton"]')
   await page.waitForTimeout(100)
-  await page.click('[class^="Modal"] [class^="CloseButton"]');
+  await page.click('[class^="Modal"] [class^="CloseButton"]')
   await page.waitForTimeout(100)
-  await page.click('[class^="Modal"] [class^="CloseButton"]');
+  await page.click('[class^="Modal"] [class^="CloseButton"]')
   await page.waitForTimeout(100)
 
-  await page.keyboard.down('ArrowUp');
+  await page.keyboard.down('ArrowUp')
 
   await page.waitForTimeout(1000000)
 
