@@ -8,7 +8,7 @@ const REGISTER_URL = 'https://dev.onelambda.clevyr.on-livi.com/register'
 const program = new Command();
 
 program
-  .option('-l, --limit <limit>', 'Max number of users for stress testing', 1)
+  .option('-l, --limit <limit>', 'Max number of users for stress testing', 10)
   .option('-o, --offset <offset>', 'Use users after nth offset', 0)
 
 program.parse(process.argv)
@@ -17,7 +17,7 @@ const startUser = parseInt(program.offset, 10)
 const endUser = startUser + parseInt(program.limit)
 
 console.log(`Starting at user ${startUser}`);
-console.log(`Running tests for ${program.limit} users`);
+console.log(`Creating ${program.limit} users`);
 
 const filteredUsers = users.slice(startUser, endUser)
 
