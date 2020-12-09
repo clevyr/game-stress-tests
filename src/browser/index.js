@@ -5,10 +5,10 @@ const { users } = config
 const LOGIN_URL = 'https://dev.onelambda.clevyr.on-livi.com/join'
 
 exports.run = async () => {
-  const lastArg = process.argv[process.argv.length - 1];
-  const limit = parseInt(lastArg); // Will be NaN if lastArg isn't a number
+  const lastArg = process.argv[process.argv.length - 1]
+  const limit = parseInt(lastArg) // Will be NaN if lastArg isn't a number
 
-  const filteredUsers = limit ? users.slice(0, limit) : users;
+  const filteredUsers = limit ? users.slice(0, limit) : users
 
   filteredUsers.forEach((user) => {
     (async () => {
