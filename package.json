@@ -1,0 +1,19 @@
+{
+  "name": "game-stress-tests",
+  "version": "1.0.0",
+  "description": "A collection of stress tests for the Game platform",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clevyr/game-stress-tests.git"
+  },
+  "author": "Aaron Krauss - Clevyr",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/clevyr/game-stress-tests/issues"
+  },
+  "homepage": "https://github.com/clevyr/game-stress-tests#readme"
+}
