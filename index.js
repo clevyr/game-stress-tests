@@ -34,7 +34,7 @@ users.forEach((user) => {
 
     await page.keyboard.down('ArrowUp')
 
-  await page.waitForTimeout(1000000)
+    await page.waitForTimeout(1000000)
 
     // await page.screenshot({ path: 'example.png' })
     await page.waitForTimeout(1000000)

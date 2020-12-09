@@ -1,16 +1,24 @@
 const company = 'Clevyr'
 const title = 'Dev'
 
+const generateBotConfig = (name) => {
+  return {
+    firstName: name,
+    lastName: 'bot',
+    email: `${name}@botbotbot.com`,
+    password: 'password',
+    company,
+    title
+  }
+}
+
 const config = {
   users: [
-    {
-      firstName: 'Aaron',
-      lastName: 'Bot',
-      email: 'aaron@botbotbot.com',
-      password: 'password',
-      company,
-      title
-    }
+    generateBotConfig('aaron'),
+    generateBotConfig('gabe'),
+    generateBotConfig('tony'),
+    generateBotConfig('grant'),
+    generateBotConfig('jake'),
   ]
 }
 
