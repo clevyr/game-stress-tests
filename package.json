@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/clevyr/livi-stress-tests/issues"
   },
-  "homepage": "https://github.com/clevyr/livi-stress-tests#readme"
+  "homepage": "https://github.com/clevyr/livi-stress-tests#readme",
+  "dependencies": {
+    "puppeteer": "^5.5.0"
+  }
 }
