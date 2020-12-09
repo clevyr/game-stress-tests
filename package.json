@@ -4,8 +4,9 @@
   "description": "A collection of stress tests for the Game platform",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js",
-    "init": "node init.js",
+    "all": "node index.js",
+    "browser": "node -e 'require(\"./src/browser/index\").run()'",
+    "browser-init": "node src/browser/init.js",
     "lint": "npx standard",
     "lint-fix": "npx standard --fix"
   },
