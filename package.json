@@ -1,0 +1,19 @@
+{
+  "name": "livi-stress-tests",
+  "version": "1.0.0",
+  "description": "A collection of stress tests for the Livi platform",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clevyr/livi-stress-tests.git"
+  },
+  "author": "Aaron Krauss - Clevyr",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/clevyr/livi-stress-tests/issues"
+  },
+  "homepage": "https://github.com/clevyr/livi-stress-tests#readme"
+}
