@@ -9,7 +9,7 @@ const program = new Command();
 
 const run = async () => {
   program
-    .option('-l, --limit <limit>', 'Max number of users for stress testing', 1)
+    .option('-l, --limit <limit>', 'Max number of users for stress testing', 10)
     .option('-o, --offset <offset>', 'Use users after nth offset', 0)
 
   program.parse(process.argv)
@@ -18,7 +18,7 @@ const run = async () => {
   const endUser = startUser + parseInt(program.limit)
 
   console.log(`Starting at user ${startUser}`);
-  console.log(`Running tests for ${program.limit} users`);
+  console.log(`Creating ${program.limit} users`);
 
   const filteredUsers = users.slice(startUser, endUser)
 

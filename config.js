@@ -15,7 +15,7 @@ const generateBotConfig = (name) => {
 const baseNames = ['aaron', 'gabe', 'tony', 'grant', 'jake']
 const users = []
 
-for (let i = 0; i < 2; i++) {
+for (let i = 0; i < 100; i++) {
   baseNames.forEach((name) => {
     users.push(generateBotConfig(name + i))
   })
