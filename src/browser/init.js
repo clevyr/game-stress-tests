@@ -1,10 +1,27 @@
 const puppeteer = require('puppeteer')
+const { Command } = require('commander');
+
 const config = require('../../config')
 
 const { users } = config
 const REGISTER_URL = `${process.env.URL}/register`
+const program = new Command();
 
-users.forEach((user) => {
+program
+  .option('-l, --limit <limit>', 'Max number of users for stress testing', 1)
+  .option('-o, --offset <offset>', 'Use users after nth offset', 0)
+
+program.parse(process.argv)
+
+const startUser = parseInt(program.offset, 10)
+const endUser = startUser + parseInt(program.limit)
+
+console.log(`Starting at user ${startUser}`);
+console.log(`Running tests for ${program.limit} users`);
+
+const filteredUsers = users.slice(startUser, endUser)
+
+filteredUsers.forEach((user) => {
   (async () => {
     const browser = await puppeteer.launch({
       headless: true
@@ -41,7 +58,7 @@ users.forEach((user) => {
     console.log('Clicked I Am Ready');
 
     // Let any extra requests finish up
-    await page.waitForTimeout(5000)
+    await page.waitForTimeout(3000)
 
     await browser.close()
   })()
