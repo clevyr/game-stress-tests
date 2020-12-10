@@ -5,7 +5,7 @@ const config = require('../../config')
 
 const { users } = config
 const MAIN_URL = 'https://dev.onelambda.clevyr.on-livi.com/join'
-const STAGE_URL = 'https://dev.onelambda.clevyr.on-livi.com/?event=pre'
+const STAGE_URL = 'https://dev.onelambda.clevyr.on-livi.com/?event=main'
 const program = new Command()
 
 const run = async (url = MAIN_URL) => {
@@ -61,7 +61,7 @@ const run = async (url = MAIN_URL) => {
 
       // Run in a circle. Forever.
       await page.keyboard.down('ArrowUp')
-      await page.keyboard.down('ArrowLeft')
+      await page.keyboard.down('ArrowRight')
 
       console.log('Running')
 
