@@ -10,9 +10,6 @@ npm install
 
 To Run:
 ```
-# Init the browser accounts (run this once)
-npm run browser-init
-
 # Run the Browser stress tests
 npm run browser # Runs for one user in non-headless mode
 npm run browser -- --headless # Runs for one user in headless mode
@@ -30,7 +27,7 @@ npm run lint-fix # to auto-fix your lint errors
 
 To Add Bot Users (Advanced):
 ```
-# Init the browser accounts (run this once)
+# Init the browser accounts
 # Without flags, will init the first 10 users
 npm run browser-init
 
