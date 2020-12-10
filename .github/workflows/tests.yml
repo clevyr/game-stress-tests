@@ -1,0 +1,58 @@
+name: Run Browser Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      users:
+        description: Number of users
+        required: true
+        default: 20
+      messages:
+        description: Messages to send per user
+        required: true
+        default: 50
+
+jobs:
+  gen-matrix:
+    runs-on: ubuntu-latest
+    name: Generate Matrix
+    outputs:
+      matrix: ${{ steps.gen-matrix.outputs.matrix }}
+    steps:
+      - id: gen-matrix
+        env:
+          users: ${{ github.event.inputs.users }}
+        run: |
+          printf '::set-output name=matrix::%s' "$(jq -cn --arg users "$users" '{"offset": [range( 0; $users|tonumber )]}')"
+
+  test:
+    runs-on: ubuntu-latest
+    name: "User Offset #${{ matrix.offset }}"
+    needs: gen-matrix
+    strategy:
+      matrix: ${{ fromJson(needs.gen-matrix.outputs.matrix) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+
+      - name: Cache frontend dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install npm dependencies
+        run: npm ci --prefer-offline
+
+      - name: Run Browser
+        env:
+          offset: ${{ matrix.offset }}
+          messages: ${{ github.event.inputs.messages }}
+        run: |
+          npm run browser -- --limit=1 --offset="$offset" --messages="$messages" --headless

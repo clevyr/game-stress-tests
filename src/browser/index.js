@@ -5,7 +5,7 @@ const config = require('../../config')
 
 const { users } = config
 const MAIN_URL = `${process.env.URL}/join`
-const STAGE_URL = `${process.env.URL}/?event=pre`
+const STAGE_URL = `${process.env.URL}/?event=main`
 const program = new Command()
 
 const run = async (url = MAIN_URL) => {
@@ -64,7 +64,7 @@ const run = async (url = MAIN_URL) => {
 
       // Run in a circle. Forever.
       await page.keyboard.down('ArrowUp')
-      await page.keyboard.down('ArrowLeft')
+      await page.keyboard.down('ArrowRight')
 
       console.log('Running')
 
