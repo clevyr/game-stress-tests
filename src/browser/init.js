@@ -1,11 +1,11 @@
 const puppeteer = require('puppeteer')
-const { Command } = require('commander');
+const { Command } = require('commander')
 
 const config = require('../../config')
 
 const { users } = config
 const REGISTER_URL = `${process.env.URL}/register`
-const program = new Command();
+const program = new Command()
 
 program
   .option('-l, --limit <limit>', 'Max number of users for stress testing', 10)
@@ -16,8 +16,8 @@ program.parse(process.argv)
 const startUser = parseInt(program.offset, 10)
 const endUser = startUser + parseInt(program.limit)
 
-console.log(`Starting at user ${startUser}`);
-console.log(`Creating ${program.limit} users`);
+console.log(`Starting at user ${startUser}`)
+console.log(`Creating ${program.limit} users`)
 
 const filteredUsers = users.slice(startUser, endUser)
 
@@ -46,7 +46,7 @@ filteredUsers.forEach((user) => {
     await page.click('[class^="Checkbox__StyledCheckbox"]')
 
     await page.click('form [type="submit"]')
-    console.log('Submitted form');
+    console.log('Submitted form')
 
     // Wait for the registration logic to run
 
@@ -55,7 +55,7 @@ filteredUsers.forEach((user) => {
     await page.waitForTimeout(10000)
     await page.click('button') // 'I am ready' avatar selection button
 
-    console.log('Clicked I Am Ready');
+    console.log('Clicked I Am Ready')
 
     // Let any extra requests finish up
     await page.waitForTimeout(3000)

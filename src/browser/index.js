@@ -1,11 +1,11 @@
 const puppeteer = require('puppeteer')
-const { Command } = require('commander');
+const { Command } = require('commander')
 
 const config = require('../../config')
 
 const { users } = config
 const LOGIN_URL = `${process.env.URL}/join`
-const program = new Command();
+const program = new Command()
 
 const run = async () => {
   program
@@ -18,9 +18,9 @@ const run = async () => {
   const startUser = parseInt(program.offset, 10)
   const endUser = startUser + parseInt(program.limit)
 
-  console.log(`Starting at user ${startUser}`);
-  console.log(`Running tests for ${program.limit} users`);
-  console.log(`Headless mode: ${program.headless}`);
+  console.log(`Starting at user ${startUser}`)
+  console.log(`Running tests for ${program.limit} users`)
+  console.log(`Headless mode: ${program.headless}`)
 
   const filteredUsers = users.slice(startUser, endUser)
 
@@ -43,49 +43,50 @@ const run = async () => {
       await page.type('input[placeholder^="Password"]', user.password)
       await page.click('form [type="submit"]')
 
-      console.log('Successful login');
-      console.log('Waiting for modal to close...');
+      console.log('Successful login')
+      console.log('Waiting for modal to close...')
 
-      const closeButtonSelector = '[class^="Modal"] [class^="CloseButton"]';
-      await page.waitForSelector(closeButtonSelector);
+      const closeButtonSelector = '[class^="Modal"] [class^="CloseButton"]'
+      await page.waitForSelector(closeButtonSelector)
 
       // Close it 3 times
       await page.click(closeButtonSelector)
-      await page.waitForSelector(closeButtonSelector);
+      await page.waitForSelector(closeButtonSelector)
       await page.click(closeButtonSelector)
-      await page.waitForSelector(closeButtonSelector);
+      await page.waitForSelector(closeButtonSelector)
       await page.click(closeButtonSelector)
 
-      console.log('Modal closed');
+      console.log('Modal closed')
 
       // Run in a circle. Forever.
       await page.keyboard.down('ArrowUp')
       await page.keyboard.down('ArrowLeft')
 
-      console.log('Running');
+      console.log('Running')
 
-      await page.waitForSelector('[class^="styles__StyledChatButton"]');
+      await page.waitForSelector('[class^="styles__StyledChatButton"]')
       await page.click('[class^="styles__StyledChatButton"]') // Open Chat
       await page.waitForTimeout(1000)
-      await page.waitForSelector('[class^="ChatSelector__Container"]');
+      await page.waitForSelector('[class^="ChatSelector__Container"]')
       await page.click('[class^="ChatSelector__Container"]') // Open Chat
-      await page.waitForSelector('[class^="style__TextArea"]');
+      await page.waitForSelector('[class^="style__TextArea"]')
 
       // Send messages every 3 seconds. Forever.
-      let messageCount = 0;
+      let messageCount = 0
       while (true) {
         messageCount++
-        await page.type('[class^="style__TextArea"]', messageCount.toString()); // Type chat
+        await page.type('[class^="style__TextArea"]', messageCount.toString()) // Type chat
         await page.click('#inputForm button') // Click Chat Submit
         await page.waitForTimeout(3000)
       }
 
-      await browser.close()
+      // B/c of the infinite loop above, this is unreachable
+      // await browser.close()
     })()
   })
 }
 
-exports.run = run;
+exports.run = run
 
 // If called directly via CLI, instead of via module
 if (require.main === module) {
