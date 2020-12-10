@@ -78,7 +78,8 @@ const run = async (url = MAIN_URL) => {
         messageCount++
         await page.type('[class^="style__TextArea"]', messageCount.toString()) // Type chat
         await page.click('#inputForm button') // Click Chat Submit
-        await page.waitForTimeout(3000)
+        await page.click('[class^="ChatEmotes__EmoteButton"]') // Click Party emote
+        await page.waitForTimeout(1000)
       }
 
       // B/c of the infinite loop above, this is unreachable
