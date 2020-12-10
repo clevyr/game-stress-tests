@@ -44,26 +44,19 @@ const run = async () => {
       await page.click('form [type="submit"]')
 
       console.log('Successful login');
+      console.log('Waiting for modal to close...');
 
-      // Let the login action run
+      const closeButtonSelector = '[class^="Modal"] [class^="CloseButton"]';
+      await page.waitForSelector(closeButtonSelector);
 
-      // Skip through the "Get Started" navigation
-      if (!program.headless) {
-        console.log('Running non-headless: waiting for modal to close');
-        const closeButtonSelector = '[class^="Modal"] [class^="CloseButton"]';
-        await page.waitForSelector(closeButtonSelector);
+      // Close it 3 times
+      await page.click(closeButtonSelector)
+      await page.waitForSelector(closeButtonSelector);
+      await page.click(closeButtonSelector)
+      await page.waitForSelector(closeButtonSelector);
+      await page.click(closeButtonSelector)
 
-        // Close it 3 times
-        await page.click(closeButtonSelector)
-        await page.waitForSelector(closeButtonSelector);
-        await page.click(closeButtonSelector)
-        await page.waitForSelector(closeButtonSelector);
-        await page.click(closeButtonSelector)
-
-        console.log('Modal closed');
-      } else {
-        await page.waitForTimeout(15000)
-      }
+      console.log('Modal closed');
 
       // Run in a circle. Forever.
       await page.keyboard.down('ArrowUp')
@@ -71,10 +64,21 @@ const run = async () => {
 
       console.log('Running');
 
-      // await page.screenshot({ path: 'example.png' })
+      await page.waitForSelector('[class^="styles__StyledChatButton"]');
+      await page.click('[class^="styles__StyledChatButton"]') // Open Chat
+      await page.waitForTimeout(1000)
+      await page.waitForSelector('[class^="ChatSelector__Container"]');
+      await page.click('[class^="ChatSelector__Container"]') // Open Chat
+      await page.waitForSelector('[class^="style__TextArea"]');
 
-      // Keep the browser up for a long time
-      await page.waitForTimeout(1000000)
+      // Send messages every 3 seconds. Forever.
+      let messageCount = 0;
+      while (true) {
+        messageCount++
+        await page.type('[class^="style__TextArea"]', messageCount.toString()); // Type chat
+        await page.click('#inputForm button') // Click Chat Submit
+        await page.waitForTimeout(3000)
+      }
 
       await browser.close()
     })()
