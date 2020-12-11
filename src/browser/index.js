@@ -14,6 +14,7 @@ const run = async (url = MAIN_URL) => {
     .option('-o, --offset <offset>', 'Use users after nth offset', 0)
     .option('-h, --headless', 'Run the test in headless mode', false)
     .option('-m, --messages <messages>', 'Run with a given number of messages', Number.MAX_SAFE_INTEGER)
+    .option('-e, --emotes', 'Run with emote reactions', false)
 
   program.parse(process.argv)
 
@@ -24,6 +25,7 @@ const run = async (url = MAIN_URL) => {
   console.log(`Starting at user ${startUser}`)
   console.log(`Running tests for ${program.limit} users`)
   console.log(`Headless mode: ${program.headless}`)
+  console.log(`Showing Emotes: ${program.emotes}`)
   console.log(`Sending ${messageLog ? program.messages : 'infinite'} messages`)
   console.log('---')
 
@@ -88,7 +90,8 @@ const run = async (url = MAIN_URL) => {
         try {
           await page.type('[class^="style__TextArea"]', messageCount.toString()) // Type chat
           await page.click('#inputForm button') // Click Chat Submit
-          if (page.$('[class^="ChatEmotes__EmoteButton"]')) {
+
+          if (program.emotes && page.$('[class^="ChatEmotes__EmoteButton"]')) {
             await page.evaluate(() => {
               document.querySelector('[class^="ChatEmotes__EmoteButton"]').click()
             })
