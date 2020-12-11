@@ -4,12 +4,11 @@ const { Command } = require('commander')
 const config = require('../../config')
 
 const { users } = config
-const MAIN_URL = `${process.env.URL}/?event=main`
-const STAGE_URL = `${process.env.URL}/?event=pre`
 const program = new Command()
 
-const run = async (url = MAIN_URL) => {
+const run = async () => {
   program
+    .requiredOption('-u, --url <url>', 'Url to use for testing')
     .option('-l, --limit <limit>', 'Max number of users for stress testing', 1)
     .option('-o, --offset <offset>', 'Use users after nth offset', 0)
     .option('-h, --headless', 'Run the test in headless mode', false)
@@ -44,7 +43,7 @@ const run = async (url = MAIN_URL) => {
       })
 
       // Login to the site
-      await page.goto(url, { waitUntil: 'networkidle2' })
+      await page.goto(program.url, { waitUntil: 'networkidle2' })
 
       await page.type('input[placeholder^="Email"]', user.email)
       await page.type('input[placeholder^="Password"]', user.password)
@@ -112,5 +111,4 @@ exports.run = run
 // If called directly via CLI, instead of via module
 if (require.main === module) {
   run()
-  // run(STAGE_URL)
 }

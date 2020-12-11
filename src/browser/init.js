@@ -4,10 +4,10 @@ const { Command } = require('commander')
 const config = require('../../config')
 
 const { users } = config
-const REGISTER_URL = `${process.env.URL}/register`
 const program = new Command()
 
 program
+  .requiredOption('-u, --url <url>', 'Url to use for testing')
   .option('-l, --limit <limit>', 'Max number of users for stress testing', 10)
   .option('-o, --offset <offset>', 'Use users after nth offset', 0)
 
@@ -15,6 +15,7 @@ program.parse(process.argv)
 
 const startUser = parseInt(program.offset, 10)
 const endUser = startUser + parseInt(program.limit)
+const url = `${process.url}/register`
 
 console.log(`Starting at user ${startUser}`)
 console.log(`Creating ${program.limit} users`)
@@ -34,7 +35,7 @@ filteredUsers.forEach((user) => {
     })
 
     // Register the users
-    await page.goto(REGISTER_URL, { waitUntil: 'networkidle2' })
+    await page.goto(url, { waitUntil: 'networkidle2' })
 
     await page.type('input[placeholder^="First"]', user.firstName)
     await page.type('input[placeholder^="Last"]', user.lastName)

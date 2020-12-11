@@ -59,8 +59,9 @@ jobs:
           emotes: ${{ github.event.inputs.emotes }}
           messages: ${{ github.event.inputs.messages }}
           offset: ${{ matrix.offset }}
+          url: ${{ secrets.LIVI_URL }}
         run: |
           if [ "$emotes" = 'true' ]; then
             flags="$flags --emotes"
           fi
-          npm run browser -- --limit=1 --offset="$offset" --messages="$messages" $flags --headless
+          npm run browser -- --url="$url" --limit=1 --offset="$offset" --messages="$messages" $flags --headless
