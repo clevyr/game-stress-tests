@@ -13,6 +13,7 @@ const run = async (url = MAIN_URL) => {
     .option('-l, --limit <limit>', 'Max number of users for stress testing', 1)
     .option('-o, --offset <offset>', 'Use users after nth offset', 0)
     .option('-h, --headless', 'Run the test in headless mode', false)
+    .option('-m, --messages <messages>', 'Run with a given number of messages', Number.MAX_SAFE_INTEGER)
 
   program.parse(process.argv)
 
@@ -22,6 +23,8 @@ const run = async (url = MAIN_URL) => {
   console.log(`Starting at user ${startUser}`)
   console.log(`Running tests for ${program.limit} users`)
   console.log(`Headless mode: ${program.headless}`)
+  console.log(`Sending ${program.messages === Number.MAX_SAFE_INTEGER ? 'infinite' : program.messages} messages`)
+  console.log('---')
 
   const filteredUsers = users.slice(startUser, endUser)
 
@@ -74,8 +77,9 @@ const run = async (url = MAIN_URL) => {
 
       // Send messages every 3 seconds. Forever.
       let messageCount = 0
-      while (true) {
+      while (messageCount < program.messages) {
         messageCount++
+        console.log(`Sending message ${messageCount}`)
         try {
           await page.type('[class^="style__TextArea"]', messageCount.toString()) // Type chat
           await page.click('#inputForm button') // Click Chat Submit
@@ -85,7 +89,7 @@ const run = async (url = MAIN_URL) => {
       }
 
       // B/c of the infinite loop above, this is unreachable
-      // await browser.close()
+      await browser.close()
     })()
   })
 }
