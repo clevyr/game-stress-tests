@@ -6,15 +6,15 @@ on:
       users:
         description: Number of users
         required: true
-        default: 20
+        default: '20'
       messages:
         description: Messages to send per user
         required: true
-        default: 50
+        default: '50'
       emotes:
         description: Emotes
         required: true
-        default: false
+        default: 'false'
 
 jobs:
   gen-matrix:
