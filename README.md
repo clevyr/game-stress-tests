@@ -33,9 +33,3 @@ npm run browser-init
 
 npm run browser-init -- --limit=15 --offset=10 # Runs for 15 users, after the 10th user
 ```
-
-To sign Chromium (to avoid the Mac popup when you run this):
-```
-# Swap out the mac-###### with what yours is in that directory.
-sudo codesign --force --deep --sign - ./node_modules/puppeteer/.local-chromium/mac-818858/chrome-mac/Chromium.app/
-```

@@ -8,7 +8,8 @@
     "browser": "node src/browser/index.js",
     "browser-init": "node src/browser/init.js",
     "lint": "npx standard",
-    "lint-fix": "npx standard --fix"
+    "lint-fix": "npx standard --fix",
+    "postinstall": "sh scripts/codesign.sh"
   },
   "repository": {
     "type": "git",
