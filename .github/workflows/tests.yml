@@ -11,6 +11,10 @@ on:
         description: Messages to send per user
         required: true
         default: 50
+      emotes:
+        description: Emotes
+        required: true
+        default: false
 
 jobs:
   gen-matrix:
@@ -52,7 +56,11 @@ jobs:
 
       - name: Run Browser
         env:
-          offset: ${{ matrix.offset }}
+          emotes: ${{ github.event.inputs.emotes }}
           messages: ${{ github.event.inputs.messages }}
+          offset: ${{ matrix.offset }}
         run: |
-          npm run browser -- --limit=1 --offset="$offset" --messages="$messages" --headless
+          if [ "$emotes" = 'true' ]; then
+            flags="$flags --emotes"
+          fi
+          npm run browser -- --limit=1 --offset="$offset" --messages="$messages" $flags --headless
