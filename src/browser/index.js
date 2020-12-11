@@ -45,6 +45,10 @@ const run = async () => {
       // Login to the site
       await page.goto(program.url, { waitUntil: 'networkidle2' })
 
+      await page.evaluate(() => {
+        localStorage.setItem('live_debug_1_DISABLED_3D', 'true');
+      });
+
       await page.type('input[placeholder^="Email"]', user.email)
       await page.type('input[placeholder^="Password"]', user.password)
       await page.click('form [type="submit"]')
