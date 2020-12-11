@@ -76,9 +76,11 @@ const run = async (url = MAIN_URL) => {
       let messageCount = 0
       while (true) {
         messageCount++
-        await page.type('[class^="style__TextArea"]', messageCount.toString()) // Type chat
-        await page.click('#inputForm button') // Click Chat Submit
-        await page.click('[class^="ChatEmotes__EmoteButton"]') // Click Party emote
+        try {
+          await page.type('[class^="style__TextArea"]', messageCount.toString()) // Type chat
+          await page.click('#inputForm button') // Click Chat Submit
+          await page.click('[class^="ChatEmotes__EmoteButton"]') // Click Party emote
+        } catch (e) {}
         await page.waitForTimeout(1000)
       }
 
