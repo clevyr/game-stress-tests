@@ -4,8 +4,8 @@ const { Command } = require('commander')
 const config = require('../../config')
 
 const { users } = config
-const MAIN_URL = `${process.env.URL}/join`
-const STAGE_URL = `${process.env.URL}/?event=main`
+const MAIN_URL = `${process.env.URL}/?event=main`
+const STAGE_URL = `${process.env.URL}/?event=pre`
 const program = new Command()
 
 const run = async (url = MAIN_URL) => {
@@ -80,12 +80,21 @@ const run = async (url = MAIN_URL) => {
       let messageCount = 0
       while (messageCount < program.messages) {
         messageCount++
-        if (messageLog) console.log(`Sending message ${messageCount}`)
+
+        if (messageLog) {
+          console.log(`Sending message ${messageCount}`)
+        }
+
         try {
           await page.type('[class^="style__TextArea"]', messageCount.toString()) // Type chat
           await page.click('#inputForm button') // Click Chat Submit
-          await page.click('[class^="ChatEmotes__EmoteButton"]') // Click Party emote
+          if (page.$('[class^="ChatEmotes__EmoteButton"]')) {
+            await page.evaluate(() => {
+              document.querySelector('[class^="ChatEmotes__EmoteButton"]').click()
+            })
+          }
         } catch (e) {}
+
         await page.waitForTimeout(1000)
       }
 
@@ -99,5 +108,6 @@ exports.run = run
 
 // If called directly via CLI, instead of via module
 if (require.main === module) {
-  run(STAGE_URL)
+  run()
+  // run(STAGE_URL)
 }
