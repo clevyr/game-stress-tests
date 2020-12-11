@@ -30,6 +30,10 @@ const run = async () => {
 
   const filteredUsers = users.slice(startUser, endUser)
 
+  if (filteredUsers.length > process.getMaxListeners()) {
+    process.setMaxListeners(filteredUsers.length);
+  }
+
   filteredUsers.forEach((user) => {
     (async () => {
       const browser = await puppeteer.launch({
