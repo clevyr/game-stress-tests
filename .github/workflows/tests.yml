@@ -33,7 +33,7 @@ jobs:
           users: ${{ github.event.inputs.users }}
         run: |
           printf '::set-output name=matrix::%s' \
-            "$(jq -cn \
+            "$(jq -ecn \
               --arg users "$users" --arg concurrent "$concurrent" \
               '{"offset": [range(0; ($users | tonumber) / ($concurrent | tonumber)) * ($concurrent | tonumber)]}')"
 
