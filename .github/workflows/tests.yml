@@ -34,8 +34,8 @@ jobs:
         run: |
           printf '::set-output name=matrix::%s' \
             "$(jq -ecn \
-              --arg users "$users" --arg concurrent "$concurrent" \
-              '{"offset": [range(0; ($users | tonumber) / ($concurrent | tonumber)) * ($concurrent | tonumber)]}')"
+              --argjson users "$users" --argjson concurrent "$concurrent" \
+              '{"offset": [range(0; $users / $concurrent) * $concurrent]}')"
 
   test:
     runs-on: ubuntu-latest
