@@ -14,6 +14,7 @@ const run = async () => {
     .option('-h, --headless', 'Run the test in headless mode', false)
     .option('-i, --iterations <iterations>', 'Run a given number of iterations', Number.MAX_SAFE_INTEGER)
     .option('-e, --emotes', 'Run with emote reactions', false)
+    .option('--messages', 'Run with message sending', false)
 
   program.parse(process.argv)
 
@@ -24,6 +25,7 @@ const run = async () => {
   console.log(`Starting at user ${startUser}`)
   console.log(`Running tests for ${program.limit} users`)
   console.log(`Headless mode: ${program.headless}`)
+  console.log(`Showing Messages: ${program.messages}`)
   console.log(`Showing Emotes: ${program.emotes}`)
   console.log(`Running ${iterationLog ? program.iterations : 'infinite'} iterations`)
   console.log('---')
@@ -51,7 +53,7 @@ const run = async () => {
         await page.goto(program.url, { waitUntil: 'networkidle2' })
 
         await page.evaluate(() => {
-         localStorage.setItem('live_debug_1_DISABLED_3D', 'true')
+          window.localStorage.setItem('live_debug_1_DISABLED_3D', 'true')
         })
 
         await page.waitForSelector('input[placeholder^="Email"]')
@@ -94,8 +96,10 @@ const run = async () => {
           }
 
           try {
-            await page.type('[class^="style__TextArea"]', i.toString()) // Type chat
-            await page.click('#inputForm button') // Click Chat Submit
+            if (program.messages && page.$('[class^="style__TextArea"]')) {
+              await page.type('[class^="style__TextArea"]', i.toString()) // Type chat
+              await page.click('#inputForm button') // Click Chat Submit
+            }
 
             if (program.emotes && page.$('[class^="ChatEmotes__EmoteButton"]')) {
               await page.evaluate(() => {
