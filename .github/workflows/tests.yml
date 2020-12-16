@@ -15,6 +15,10 @@ on:
         description: Emotes
         required: true
         default: 'false'
+      concurrent:
+        description: Concurrent users per job (Up to 5 works well)
+        required: true
+        default: '3'
 
 jobs:
   gen-matrix:
@@ -25,9 +29,13 @@ jobs:
     steps:
       - id: gen-matrix
         env:
+          concurrent: ${{ github.event.inputs.concurrent }}
           users: ${{ github.event.inputs.users }}
         run: |
-          printf '::set-output name=matrix::%s' "$(jq -cn --arg users "$users" '{"offset": [range(0; ($users | tonumber) / 2) * 2]}')"
+          printf '::set-output name=matrix::%s' \
+            "$(jq -cn \
+              --arg users "$users" --arg concurrent "$concurrent" \
+              '{"offset": [range(0; ($users | tonumber) / ($concurrent | tonumber)) * ($concurrent | tonumber)]}')"
 
   test:
     runs-on: ubuntu-latest
@@ -56,6 +64,7 @@ jobs:
 
       - name: Run Browser
         env:
+          concurrent: ${{ github.event.inputs.concurrent }}
           emotes: ${{ github.event.inputs.emotes }}
           messages: ${{ github.event.inputs.messages }}
           offset: ${{ matrix.offset }}
@@ -64,4 +73,4 @@ jobs:
           if [ "$emotes" = 'true' ]; then
             flags="$flags --emotes"
           fi
-          npm run browser -- --url="$url" --limit=2 --offset="$offset" --messages="$messages" $flags --headless
+          npm run browser -- --url="$url" --limit="$concurrent" --offset="$offset" --messages="$messages" $flags --headless
