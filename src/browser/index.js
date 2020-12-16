@@ -12,20 +12,20 @@ const run = async () => {
     .option('-l, --limit <limit>', 'Max number of users for stress testing', 1)
     .option('-o, --offset <offset>', 'Use users after nth offset', 0)
     .option('-h, --headless', 'Run the test in headless mode', false)
-    .option('-m, --messages <messages>', 'Run with a given number of messages', Number.MAX_SAFE_INTEGER)
+    .option('-i, --iterations <iterations>', 'Run a given number of iterations', Number.MAX_SAFE_INTEGER)
     .option('-e, --emotes', 'Run with emote reactions', false)
 
   program.parse(process.argv)
 
   const startUser = parseInt(program.offset, 10)
   const endUser = startUser + parseInt(program.limit)
-  const messageLog = program.messages !== Number.MAX_SAFE_INTEGER
+  const iterationLog = program.iterations !== Number.MAX_SAFE_INTEGER
 
   console.log(`Starting at user ${startUser}`)
   console.log(`Running tests for ${program.limit} users`)
   console.log(`Headless mode: ${program.headless}`)
   console.log(`Showing Emotes: ${program.emotes}`)
-  console.log(`Sending ${messageLog ? program.messages : 'infinite'} messages`)
+  console.log(`Running ${iterationLog ? program.iterations : 'infinite'} iterations`)
   console.log('---')
 
   const filteredUsers = users.slice(startUser, endUser)
@@ -88,16 +88,13 @@ const run = async () => {
         await page.waitForSelector('[class^="style__TextArea"]')
 
         // Send messages every 3 seconds. Forever.
-        let messageCount = 0
-        while (messageCount < program.messages) {
-          messageCount++
-
-          if (messageLog) {
-            console.log(`Sending message ${messageCount}`)
+        for (let i = 0; i < program.iterations; i++) {
+          if (iterationLog) {
+            console.log(`Iteration ${i}`)
           }
 
           try {
-            await page.type('[class^="style__TextArea"]', messageCount.toString()) // Type chat
+            await page.type('[class^="style__TextArea"]', i.toString()) // Type chat
             await page.click('#inputForm button') // Click Chat Submit
 
             if (program.emotes && page.$('[class^="ChatEmotes__EmoteButton"]')) {
