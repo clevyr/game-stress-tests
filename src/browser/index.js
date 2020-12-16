@@ -54,6 +54,7 @@ const run = async () => {
          localStorage.setItem('live_debug_1_DISABLED_3D', 'true')
         })
 
+        await page.waitForSelector('input[placeholder^="Email"]')
         await page.type('input[placeholder^="Email"]', user.email)
         await page.type('input[placeholder^="Password"]', user.password)
         await page.click('form [type="submit"]')
