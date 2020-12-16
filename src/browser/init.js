@@ -15,7 +15,7 @@ program.parse(process.argv)
 
 const startUser = parseInt(program.offset, 10)
 const endUser = startUser + parseInt(program.limit)
-const url = `${process.url}/register`
+const url = `${program.url}/register`
 
 console.log(`Starting at user ${startUser}`)
 console.log(`Creating ${program.limit} users`)
@@ -37,6 +37,7 @@ filteredUsers.forEach((user) => {
     // Register the users
     await page.goto(url, { waitUntil: 'networkidle2' })
 
+    await page.waitForSelector('input[placeholder^="First"]')
     await page.type('input[placeholder^="First"]', user.firstName)
     await page.type('input[placeholder^="Last"]', user.lastName)
     await page.type('input[placeholder^="Email"]', user.email)
