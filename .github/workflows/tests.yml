@@ -12,7 +12,7 @@ on:
         required: true
         default: '50'
       emotes:
-        description: Emotes
+        description: Emotes (true or false)
         required: true
         default: 'false'
       concurrent:
@@ -39,7 +39,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    name: "User Offset #${{ matrix.offset }}"
+    name: "Offset #${{ matrix.offset }}"
     needs: gen-matrix
     strategy:
       matrix: ${{ fromJson(needs.gen-matrix.outputs.matrix) }}
