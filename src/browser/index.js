@@ -31,7 +31,7 @@ const run = async () => {
   const filteredUsers = users.slice(startUser, endUser)
 
   if (filteredUsers.length > process.getMaxListeners()) {
-    process.setMaxListeners(filteredUsers.length);
+    process.setMaxListeners(filteredUsers.length)
   }
 
   filteredUsers.forEach((user) => {
@@ -46,70 +46,75 @@ const run = async () => {
         deviceScaleFactor: 1
       })
 
-      // Login to the site
-      await page.goto(program.url, { waitUntil: 'networkidle2' })
+      try {
+        // Login to the site
+        await page.goto(program.url, { waitUntil: 'networkidle2' })
 
-      await page.evaluate(() => {
-        localStorage.setItem('live_debug_1_DISABLED_3D', 'true');
-      });
+        await page.evaluate(() => {
+         localStorage.setItem('live_debug_1_DISABLED_3D', 'true')
+        })
 
-      await page.type('input[placeholder^="Email"]', user.email)
-      await page.type('input[placeholder^="Password"]', user.password)
-      await page.click('form [type="submit"]')
+        await page.type('input[placeholder^="Email"]', user.email)
+        await page.type('input[placeholder^="Password"]', user.password)
+        await page.click('form [type="submit"]')
 
-      console.log('Successful login')
-      console.log('Waiting for modal to close...')
+        console.log('Successful login')
+        console.log('Waiting for modal to close...')
 
-      const closeButtonSelector = '[class^="Modal"] [class^="CloseButton"]'
-      await page.waitForSelector(closeButtonSelector)
+        const closeButtonSelector = '[class^="Modal"] [class^="CloseButton"]'
+        await page.waitForSelector(closeButtonSelector)
 
-      // Close it 3 times
-      await page.click(closeButtonSelector)
-      await page.waitForSelector(closeButtonSelector)
-      await page.click(closeButtonSelector)
-      await page.waitForSelector(closeButtonSelector)
-      await page.click(closeButtonSelector)
+        // Close it 3 times
+        await page.click(closeButtonSelector)
+        await page.waitForSelector(closeButtonSelector)
+        await page.click(closeButtonSelector)
+        await page.waitForSelector(closeButtonSelector)
+        await page.click(closeButtonSelector)
 
-      console.log('Modal closed')
+        console.log('Modal closed')
 
-      // Run in a circle. Forever.
-      await page.keyboard.down('ArrowUp')
-      await page.keyboard.down('ArrowRight')
+        // Run in a circle. Forever.
+        await page.keyboard.down('ArrowUp')
+        await page.keyboard.down('ArrowRight')
 
-      console.log('Running')
+        console.log('Running')
 
-      await page.waitForSelector('[class^="styles__StyledChatButton"]')
-      await page.click('[class^="styles__StyledChatButton"]') // Open Chat
-      await page.waitForTimeout(1000)
-      await page.waitForSelector('[class^="ChatSelector__Container"]')
-      await page.click('[class^="ChatSelector__Container"]') // Open Chat
-      await page.waitForSelector('[class^="style__TextArea"]')
-
-      // Send messages every 3 seconds. Forever.
-      let messageCount = 0
-      while (messageCount < program.messages) {
-        messageCount++
-
-        if (messageLog) {
-          console.log(`Sending message ${messageCount}`)
-        }
-
-        try {
-          await page.type('[class^="style__TextArea"]', messageCount.toString()) // Type chat
-          await page.click('#inputForm button') // Click Chat Submit
-
-          if (program.emotes && page.$('[class^="ChatEmotes__EmoteButton"]')) {
-            await page.evaluate(() => {
-              document.querySelector('[class^="ChatEmotes__EmoteButton"]').click()
-            })
-          }
-        } catch (e) {}
-
+        await page.waitForSelector('[class^="styles__StyledChatButton"]')
+        await page.click('[class^="styles__StyledChatButton"]') // Open Chat
         await page.waitForTimeout(1000)
-      }
+        await page.waitForSelector('[class^="ChatSelector__Container"]')
+        await page.click('[class^="ChatSelector__Container"]') // Open Chat
+        await page.waitForSelector('[class^="style__TextArea"]')
 
-      // B/c of the infinite loop above, this is unreachable
-      await browser.close()
+        // Send messages every 3 seconds. Forever.
+        let messageCount = 0
+        while (messageCount < program.messages) {
+          messageCount++
+
+          if (messageLog) {
+            console.log(`Sending message ${messageCount}`)
+          }
+
+          try {
+            await page.type('[class^="style__TextArea"]', messageCount.toString()) // Type chat
+            await page.click('#inputForm button') // Click Chat Submit
+
+            if (program.emotes && page.$('[class^="ChatEmotes__EmoteButton"]')) {
+              await page.evaluate(() => {
+                document.querySelector('[class^="ChatEmotes__EmoteButton"]').click()
+              })
+            }
+          } catch (e) {
+            console.warn(e)
+          }
+
+          await page.waitForTimeout(1000)
+        }
+      } catch (e) {
+        console.error(e)
+      } finally {
+        await browser.close()
+      }
     })()
   })
 }
