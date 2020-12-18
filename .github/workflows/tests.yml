@@ -70,7 +70,7 @@ jobs:
         env:
           concurrent: ${{ github.event.inputs.concurrent }}
           emotes: ${{ github.event.inputs.emotes }}
-          iterations: ${{ github.event.inputs.iteration }}
+          iterations: ${{ github.event.inputs.iterations }}
           messages: ${{ github.event.inputs.messages }}
           offset: ${{ matrix.offset }}
           url: ${{ secrets.LIVI_URL }}
@@ -80,4 +80,5 @@ jobs:
           fi
           if [ "$messages" = 'true' ]; then
             flags="$flags --messages"
+          fi
           npm run browser -- --url="$url" --limit="$concurrent" --offset="$offset" --iterations="$iterations" $flags --headless
