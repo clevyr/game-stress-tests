@@ -82,3 +82,10 @@ jobs:
             flags="$flags --messages"
           fi
           npm run browser -- --url="$url" --limit="$concurrent" --offset="$offset" --iterations="$iterations" $flags --headless
+
+      - name: Upload Error Screenshots
+        uses: actions/upload-artifact@v2
+        with:
+          name: error-screenshots-${{ matrix.offset }}
+          path: ./errors/*
+          if-no-files-found: ignore
