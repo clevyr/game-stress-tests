@@ -88,5 +88,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: error-screenshots-${{ matrix.offset }}
-          path: ./errors/*
+          path: ./errors/*.png
           if-no-files-found: ignore
