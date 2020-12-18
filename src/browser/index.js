@@ -102,12 +102,14 @@ const run = async () => {
 
         console.log('Running')
 
-        await page.waitForSelector('[class^="styles__StyledChatButton"]')
-        await page.click('[class^="styles__StyledChatButton"]') // Open Chat
-        await page.waitForTimeout(1000)
-        await page.waitForSelector('[class^="ChatSelector__Container"]')
-        await page.click('[class^="ChatSelector__Container"]') // Open Chat
-        await page.waitForSelector('[class^="style__TextArea"]')
+        if (program.messages) {
+          await page.waitForSelector('[class^="styles__StyledChatButton"]')
+          await page.click('[class^="styles__StyledChatButton"]') // Open Chat
+          await page.waitForTimeout(1000)
+          await page.waitForSelector('[class^="ChatSelector__Container"]')
+          await page.click('[class^="ChatSelector__Container"]') // Open Chat
+          await page.waitForSelector('[class^="style__TextArea"]')
+        }
 
         // Send messages every 3 seconds. Forever.
         for (let i = 0; i < program.iterations; i++) {
