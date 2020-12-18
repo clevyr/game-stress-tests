@@ -48,20 +48,40 @@ const run = async () => {
         deviceScaleFactor: 1
       })
 
+      let pageLoaded = false;
+
       try {
         // Login to the site
-        await page.goto(program.url, { waitUntil: 'networkidle2' })
+        while (pageLoaded === false) {
+          await page.goto(program.url, { waitUntil: 'networkidle2' })
 
-        await page.evaluate(() => {
-          window.localStorage.setItem('live_debug_1_DISABLED_3D', 'true')
-        })
+          await page.evaluate(() => {
+            window.localStorage.setItem('live_debug_1_DISABLED_3D', 'true')
+          })
 
-        await page.waitForSelector('input[placeholder^="Email"]')
+          try {
+            await page.waitForSelector('input[placeholder^="Email"]')
+            console.log('Page loaded!');
+            pageLoaded = true;
+          } catch (_error) {
+            console.log('Page not loaded. Refreshing page...');
+          }
+        }
+
         await page.type('input[placeholder^="Email"]', user.email)
         await page.type('input[placeholder^="Password"]', user.password)
         await page.click('form [type="submit"]')
 
         console.log('Successful login')
+
+        await page.waitForTimeout(10000)
+
+        const [button] = await page.$x("//button[contains(., 'I am ready')]");
+        if (button) {
+          await button.click();
+          console.log('Clicked a button')
+        }
+
         console.log('Waiting for modal to close...')
 
         const closeButtonSelector = '[class^="Modal"] [class^="CloseButton"]'
