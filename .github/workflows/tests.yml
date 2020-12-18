@@ -46,6 +46,7 @@ jobs:
     name: "Offset #${{ matrix.offset }}"
     needs: gen-matrix
     strategy:
+      fail-fast: false
       matrix: ${{ fromJson(needs.gen-matrix.outputs.matrix) }}
     steps:
       - name: Checkout
