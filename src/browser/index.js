@@ -133,6 +133,7 @@ const run = async () => {
           await page.waitForTimeout(1000)
         }
       } catch (e) {
+        await page.screenshot({path: `errors/${user.firstName}.png`});
         console.error(e)
       } finally {
         await browser.close()
