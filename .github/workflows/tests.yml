@@ -6,11 +6,11 @@ on:
       users:
         description: Number of users
         required: true
-        default: '20'
+        default: '100'
       iterations:
         description: Iterations per user
         required: true
-        default: '50'
+        default: '100'
       messages:
         description: Messages (true or false)
         required: true
@@ -22,7 +22,7 @@ on:
       concurrent:
         description: Concurrent users per job (Up to 5 works well)
         required: true
-        default: '3'
+        default: '5'
 
 jobs:
   gen-matrix:
@@ -41,10 +41,46 @@ jobs:
               --argjson users "$users" --argjson concurrent "$concurrent" \
               '{"offset": [range(0; $users / $concurrent) * $concurrent]}')"
 
+
+  install-dependencies:
+    runs-on: ubuntu-latest
+    name: "Install Dependencies"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        id: node_modules_cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node_modules-
+
+      - name: Cache ~/.npm
+        uses: actions/cache@v2
+        if: steps.node_modules_cache.outputs.cache-hit != 'true'
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - uses: actions/setup-node@v2
+        if: steps.node_modules_cache.outputs.cache-hit != 'true'
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        if: steps.node_modules_cache.outputs.cache-hit != 'true'
+        run: npm ci --prefer-offline
+
+
   test:
     runs-on: ubuntu-latest
     name: "Offset #${{ matrix.offset }}"
-    needs: gen-matrix
+    needs: [gen-matrix, install-dependencies]
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.gen-matrix.outputs.matrix) }}
@@ -52,20 +88,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
-          node-version: '12.x'
+          node-version: '14'
 
-      - name: Cache frontend dependencies
-        uses: actions/cache@v1
+      - name: Cache node_modules
+        uses: actions/cache@v2
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: Install npm dependencies
-        run: npm ci --prefer-offline
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
 
       - name: Run Browser
         env:
@@ -74,7 +105,7 @@ jobs:
           iterations: ${{ github.event.inputs.iterations }}
           messages: ${{ github.event.inputs.messages }}
           offset: ${{ matrix.offset }}
-          url: ${{ secrets.LIVI_URL }}
+          url: ${{ secrets.GAME_URL }}
         run: |
           if [ "$emotes" = 'true' ]; then
             flags="$flags --emotes"
@@ -82,11 +113,13 @@ jobs:
           if [ "$messages" = 'true' ]; then
             flags="$flags --messages"
           fi
-          npm run browser -- --url="$url" --limit="$concurrent" --offset="$offset" --iterations="$iterations" $flags --headless
+
+          npm run browser -- --url="$url" --limit="$concurrent" --offset="$offset" --iterations="$iterations" --headless $flags
 
       - name: Upload Error Screenshots
         uses: actions/upload-artifact@v2
         with:
-          name: error-screenshots-${{ matrix.offset }}
+          name: errors-offset-${{ matrix.offset }}
           path: ./errors/*.png
           if-no-files-found: ignore
+          retention-days: 14
