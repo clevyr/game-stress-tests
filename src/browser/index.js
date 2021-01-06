@@ -138,9 +138,11 @@ const run = async () => {
             await page.waitForTimeout(1000)
           }
         } else {
-          await page.goto(program.url, { waitUntil: 'networkidle2' })
-          // TODO: Get a better timeout working
-          await page.waitForTimeout(10000)
+          await page.goto(program.url, { waitUntil: 'domcontentloaded' })
+
+          await page.waitForSelector('[class^="styles__MenuContainer"]')
+          console.log('Menu container loaded.')
+          await page.waitForTimeout(1000)
 
           let x = 10;
           let delay = 10;
@@ -150,6 +152,7 @@ const run = async () => {
           await page.mouse.move(x, 500);
           await page.mouse.down()
 
+          console.log('Beginning mouse movements...');
           const moveMouse = () => {
             x += forwardDirection ? 10 : -10;
 
@@ -164,6 +167,8 @@ const run = async () => {
             iteration++;
             if (iteration < program.iterations) {
               setTimeout(moveMouse, delay);
+            } else {
+              console.log('Ran last iteration');
             }
           };
 
@@ -175,7 +180,7 @@ const run = async () => {
             1000 * 60 * 60 // 1 hour max
           )
 
-          await page.waitForTimeout(pageTimeout)
+          await page.waitForTimeout(pageTimeout + 5000)
 
           // for (let i = 0; i < program.iterations; i++) {
           //   setTimeout(() => {
