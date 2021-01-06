@@ -143,11 +143,14 @@ const run = async () => {
           await page.waitForTimeout(10000)
 
           let x = 10;
+          let delay = 10;
+          let iteration = 0;
           let forwardDirection = true;
 
           await page.mouse.move(x, 500);
           await page.mouse.down()
-          setInterval(async () => {
+
+          const moveMouse = () => {
             x += forwardDirection ? 10 : -10;
 
             if (x < -100) {
@@ -157,11 +160,39 @@ const run = async () => {
               forwardDirection = false;
             }
 
-            await page.mouse.move(x, 500);
-          }, 100);
+            page.mouse.move(x, 500);
+            iteration++;
+            if (iteration < program.iterations) {
+              setTimeout(moveMouse, delay);
+            }
+          };
+
+          moveMouse()
+
+          const pageTimeout = iterationLog ? (
+            program.iterations * delay
+          ) : (
+            1000 * 60 * 60 // 1 hour max
+          )
+
+          await page.waitForTimeout(pageTimeout)
+
+          // for (let i = 0; i < program.iterations; i++) {
+          //   setTimeout(() => {
+          //     x += forwardDirection ? 10 : -10;
+          //
+          //     if (x < -100) {
+          //       forwardDirection = true;
+          //     }
+          //     if (x > 300) {
+          //       forwardDirection = false;
+          //     }
+          //
+          //     page.mouse.move(x, 500);
+          //   }, 100);
+          // }
 
           // TODO: Get this working in a nicer way.
-          await page.waitForTimeout(50000)
         }
       } catch (e) {
         await page.screenshot({path: `errors/${user.firstName}.png`});
