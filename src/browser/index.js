@@ -139,10 +139,13 @@ const run = async () => {
           }
         } else {
           await page.goto(program.url, { waitUntil: 'domcontentloaded' })
+          console.log('Page loaded.')
 
-          await page.waitForSelector('[class^="styles__MenuContainer"]')
-          console.log('Menu container loaded.')
-          await page.waitForTimeout(1000)
+          // await page.waitForSelector('[class^="styles__MenuContainer"]')
+          // await page.waitForSelector('[class^="styles__PinHeadline"]')
+
+          console.log('Waiting 10 sec...')
+          await page.waitForTimeout(10000)
 
           let x = 10;
           let delay = 10;
