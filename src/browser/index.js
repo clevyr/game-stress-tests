@@ -139,6 +139,11 @@ const run = async () => {
           }
         } else {
           await page.goto(program.url, { waitUntil: 'domcontentloaded' })
+
+          await page.evaluate(() => {
+            window.localStorage.setItem('live_debug_1_DISABLED_3D', 'true')
+          })
+
           console.log('Page loaded.')
 
           // await page.waitForSelector('[class^="styles__MenuContainer"]')
