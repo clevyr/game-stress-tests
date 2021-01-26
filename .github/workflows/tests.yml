@@ -122,4 +122,4 @@ jobs:
           name: errors-offset-${{ matrix.offset }}
           path: ./errors/*.png
           if-no-files-found: ignore
-          retention-days: 14
+          retention-days: 1
