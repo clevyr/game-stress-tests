@@ -5,10 +5,8 @@
   "main": "index.js",
   "scripts": {
     "all": "node index.js",
-    "browser": "node src/browser/index.js",
-    "browser-init": "node src/browser/init.js",
-    "lint": "npx standard",
-    "lint-fix": "npx standard --fix",
+    "browser": "node src/index.js",
+    "lint": "eslint src/**/*.js",
     "postinstall": "sh scripts/codesign.sh"
   },
   "repository": {
@@ -27,6 +25,9 @@
     "puppeteer": "^5.5.0"
   },
   "devDependencies": {
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
     "standard": "^16.0.3"
   }
 }

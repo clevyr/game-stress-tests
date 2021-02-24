@@ -11,18 +11,14 @@ on:
         description: Iterations per user
         required: true
         default: '100'
-      messages:
-        description: Messages (true or false)
-        required: true
-        default: 'false'
-      emotes:
-        description: Emotes (true or false)
-        required: true
-        default: 'false'
       concurrent:
         description: Concurrent users per job (Up to 5 works well)
         required: true
         default: '5'
+      send-every:
+        description: Send a message every x milliseconds
+        required: true
+        default: '3000'
 
 jobs:
   gen-matrix:
@@ -101,20 +97,12 @@ jobs:
       - name: Run Browser
         env:
           concurrent: ${{ github.event.inputs.concurrent }}
-          emotes: ${{ github.event.inputs.emotes }}
           iterations: ${{ github.event.inputs.iterations }}
-          messages: ${{ github.event.inputs.messages }}
           offset: ${{ matrix.offset }}
+          send_every: ${{ github.event.inputs.send-every }}
           url: ${{ secrets.GAME_URL }}
         run: |
-          if [ "$emotes" = 'true' ]; then
-            flags="$flags --emotes"
-          fi
-          if [ "$messages" = 'true' ]; then
-            flags="$flags --messages"
-          fi
-
-          npm run browser -- --url="$url" --limit="$concurrent" --offset="$offset" --iterations="$iterations" --headless $flags
+          npm run browser -- --url="$url" --limit="$concurrent" --offset="$offset" --iterations="$iterations" --headless --send-every=$send_every
 
       - name: Upload Error Screenshots
         uses: actions/upload-artifact@v2

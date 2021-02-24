@@ -1,3 +1,3 @@
-const browser = require('./src/browser/index')
+const browser = require('./src')
 
 browser.run()
