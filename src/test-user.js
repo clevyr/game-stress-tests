@@ -43,41 +43,46 @@ async function run(user) {
   });
   page.setDefaultTimeout(60000);
 
-  try {
-    // Login to the site
-    await page.goto(opts.url, { waitUntil: 'domcontentloaded' });
+  let tries = 0;
+  while (tries < 5) {
+    try {
+      // Login to the site
+      await page.goto(opts.url, { waitUntil: 'domcontentloaded' });
 
-    // Disable 3D
-    await page.evaluate(() => {
-      window.localStorage.setItem('live_debug_1_DISABLED_3D', 'true');
-    });
+      // Disable 3D
+      await page.evaluate(() => {
+        window.localStorage.setItem('live_debug_1_DISABLED_3D', 'true');
+      });
 
-    await waitForSelectorAndClick(page, '[class^=IntroModal__] [class^=CloseButton__]');
-    await openChat(page);
-    await waitForSelectorAndClick(page, '[class^=RegistrationModal__] button');
-    await waitForXAndClick(page, '//button[contains(., "Login")]');
+      await waitForSelectorAndClick(page, '[class^=IntroModal__] [class^=CloseButton__]');
+      await openChat(page);
+      await waitForSelectorAndClick(page, '[class^=RegistrationModal__] button');
+      await waitForXAndClick(page, '//button[contains(., "Login")]');
 
-    await waitForSelectorAndType(page, 'input[placeholder^="Email"]', user.email);
-    await waitForSelectorAndType(page, 'input[placeholder^="Password"]', user.password);
-    await waitForSelectorAndClick(page, 'form [type="submit"]');
-    await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
-    await page.waitForTimeout(5000);
+      await waitForSelectorAndType(page, 'input[placeholder^="Email"]', user.email);
+      await waitForSelectorAndType(page, 'input[placeholder^="Password"]', user.password);
+      await waitForSelectorAndClick(page, 'form [type="submit"]');
+      await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
+      await page.waitForTimeout(5000);
 
-    await openChat(page);
-    await page.waitForTimeout(250);
-    await waitForSelectorAndClick(page, '[class^=ChatSelector__StyledChatRoom-]');
+      await openChat(page);
+      await page.waitForTimeout(250);
+      await waitForSelectorAndClick(page, '[class^=ChatSelector__StyledChatRoom-]');
 
-    for (let i = 0; i < opts.iterations; i++) {
-      await waitForSelectorAndType(page, 'textarea', (new Date()).toUTCString());
-      await page.click('#chatInputForm button');
-      await page.waitForTimeout(opts.sendEvery);
+      for (let i = 0; i < opts.iterations; i++) {
+        await waitForSelectorAndType(page, 'textarea', (new Date()).toUTCString());
+        await page.click('#chatInputForm button');
+        await page.waitForTimeout(opts.sendEvery);
+      }
+      break;
+    } catch (e) {
+      await page.screenshot({ path: `errors/${user.firstName}.png` });
+      console.error(e);
+      ++tries;
+      await page.waitForTimeout(30000);
     }
-  } catch (e) {
-    await page.screenshot({ path: `errors/${user.firstName}.png` });
-    console.error(e);
-  } finally {
-    await browser.close();
   }
+  await browser.close();
 }
 
 module.exports = run;
