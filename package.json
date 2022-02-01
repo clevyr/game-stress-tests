@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/clevyr/game-stress-tests#readme",
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.24.0",
     "commander": "^6.2.0",
     "puppeteer": "^5.5.0"
   },
